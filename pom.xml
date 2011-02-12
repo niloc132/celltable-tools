@@ -2,12 +2,14 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.colinalworth</groupId>
-	<artifactId>celltable-columns</artifactId>
+	<artifactId>celltable-tools</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<properties>
 		<gwt.version>2.1.1</gwt.version>
 		<gwt.plugin.version>2.1.1-SNAPSHOT</gwt.plugin.version>
+		
+		<gwt.test.mode>htmlunit</gwt.test.mode>
 	</properties>
 	<pluginRepositories>
 		<pluginRepository>
@@ -81,6 +83,7 @@
 						</goals>
 						<configuration>
 							<includes>**/client/**.java</includes>
+							<mode>${gwt.test.mode}</mode>
 						</configuration>
 					</execution>
 				</executions>
@@ -96,4 +99,12 @@
 			</plugin>
 		</plugins>
 	</build>
+	<profiles>
+		<profile>
+			<id>manual</id>
+			<properties>
+				<gwt.test.mode>manual</gwt.test.mode>
+			</properties>
+		</profile>
+	</profiles>
 </project>
