@@ -16,7 +16,11 @@
  */
 package com.colinalworth.celltable.columns.client;
 
+import com.google.gwt.cell.client.TextCell;
+import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.user.cellview.client.CellTable;
 
 /**
  * 
@@ -29,7 +33,93 @@ public class ColumnsWithFactoryTest extends GWTTestCase {
 	public String getModuleName() {
 		return "com.colinalworth.celltable.columns.ColumnsTest";
 	}
-	public void testNothing() {
 
+	interface IBeanModel {
+		String getStringProp();
+		//void setStringProp(String val);
 	}
+	interface SimpleColumnsWithFactory extends ColumnsWithFactory<IBeanModel, SimpleFactory> {
+		@Path("stringProp")
+		TextCell notFactory();
+
+		@Path("stringProp")
+		TextCell withFactory();
+	}
+	class SimpleFactory {
+		private TextCell factoryInstance;
+		public SimpleFactory(TextCell cell) {
+			factoryInstance = cell;
+		}
+		public TextCell withFactory() {
+			return factoryInstance;
+		}
+	}
+	public void testSimpleReadonlyColumnsWithFactory() {
+		TextCell cell = new TextCell();
+		SimpleFactory f = new SimpleFactory(cell);
+
+		SimpleColumnsWithFactory columns = GWT.create(SimpleColumnsWithFactory.class);
+		columns.setFactory(f);
+
+		assertEquals(cell,columns.withFactory());
+
+		CellTable<IBeanModel> table = new CellTable<ColumnsWithFactoryTest.IBeanModel>();
+		columns.configure(table);
+
+		assertEquals(2, getColumnCount(table));
+	}
+
+	public void testBreaksWithNoFactory() {
+		TextCell cell = new TextCell();
+
+		SimpleColumnsWithFactory columns = GWT.create(SimpleColumnsWithFactory.class);
+
+		//test always fails to finish...
+		CellTable<IBeanModel> table = new CellTable<ColumnsWithFactoryTest.IBeanModel>();
+
+		try {
+			columns.configure(table);
+			fail("Fail - exception should occur");
+		} catch (Exception ex) {
+			//pass
+		}
+	}
+
+	public void testBreaksWithNullFactory() {
+		SimpleColumnsWithFactory columns = GWT.create(SimpleColumnsWithFactory.class);
+
+		//test always fails to finish...
+		//CellTable<IBeanModel> table = new CellTable<ColumnsWithFactoryTest.IBeanModel>();
+
+		try {
+			columns.setFactory(null);
+			fail("Fail - exception should occur");
+		} catch (Exception ex) {
+			//pass
+		}
+	}
+
+	public void testBreaksWithDoubleFactory() {
+		TextCell cell = new TextCell();
+		SimpleFactory f1 = new SimpleFactory(cell);
+
+		SimpleFactory f2 = new SimpleFactory(cell);
+
+		SimpleColumnsWithFactory columns = GWT.create(SimpleColumnsWithFactory.class);
+
+		//test always fails to finish...
+		CellTable<IBeanModel> table = new CellTable<ColumnsWithFactoryTest.IBeanModel>();
+
+		try {
+			columns.setFactory(f1);
+			columns.setFactory(f2);
+			fail("Fail - exception should occur");
+		} catch (Exception ex) {
+			//pass
+		}
+	}
+
+	private native int getColumnCount(CellTable<?> table) /*-{
+		return table.@com.google.gwt.user.cellview.client.CellTable::columns.@java.util.List::size()();
+	}-*/;
 }

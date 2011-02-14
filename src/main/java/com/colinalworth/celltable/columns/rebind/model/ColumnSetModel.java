@@ -17,9 +17,12 @@
 package com.colinalworth.celltable.columns.rebind.model;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
 
 import com.colinalworth.celltable.columns.client.Columns;
 import com.colinalworth.celltable.columns.client.Columns.Alignment;
@@ -101,14 +104,16 @@ public class ColumnSetModel {
 	public String getPaths() {
 		//TODO make this static?
 		StringBuilder sb = new StringBuilder("new String[] {");
-		boolean first = true;
+		Set<String> paths = new HashSet<String>();
+
 		for (ColumnModel c : getColumnModels()) {
-			if (!first) {
-				sb.append(",");
+			if (c.getPath() != null && c.getPath().length() != 0) {
+				paths.add("\"" + c.getPath().replaceAll(Pattern.quote("\\"), "\\\\") + "\"");
 			}
-			first = false;
-			sb.append("\"" + c.getPath() + "\"");
 		}
+
+		sb.append(StringUtils.join(paths, ","));
+
 		return sb.append("}").toString();
 	}
 

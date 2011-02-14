@@ -16,8 +16,13 @@
  */
 package com.colinalworth.celltable.columns.client;
 
+import java.util.Date;
+
+import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
+import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.cellview.client.CellTable;
 
@@ -27,29 +32,48 @@ import com.google.gwt.user.cellview.client.CellTable;
  *
  */
 public class ColumnsTest extends GWTTestCase {
-	interface IBeanModel {
-		String getStringProp();
-		void setStringProp(String val);
-
-
-	}
-	interface NoPaths extends Columns<IBeanModel> {
-		TextCell stringProp();
-	}
-
 	@Override
 	public String getModuleName() {
 		return "com.colinalworth.celltable.columns.ColumnsTest";
 	}
 
+	interface IBeanModel {
+		String getStringProp();
+		//void setStringProp(String val);
+	}
+	interface SimplePaths extends Columns<IBeanModel> {
+		TextCell stringProp();
+	}
+
 	public void testSimpleReadOnlyCellTable() {
-		NoPaths cols = GWT.create(NoPaths.class);
-		CellTable<IBeanModel> cellTable = new CellTable<ColumnsTest.IBeanModel>();
+		SimplePaths cols = GWT.create(SimplePaths.class);
+		CellTable<IBeanModel> cellTable = new CellTable<IBeanModel>();
 		cols.configure(cellTable);
-		assert getColumnCount(cellTable) == 1;
+		assertEquals(1, getColumnCount(cellTable));
+	}
+
+	interface ComplexBeanModel {
+		String getStringProp();
+		Date getDateObj();
+		int getIntPrimitive();
+
+	}
+	interface LotsOfPaths extends Columns<ComplexBeanModel> {
+		@Path("stringProp")
+		TextCell myStringColumn();
+		@Path("dateObj")
+		DateCell date();
+		@Path("dateObj.year")
+		NumberCell year();
+	}
+	public void testPaths() {
+		LotsOfPaths c = GWT.create(LotsOfPaths.class);
+		CellTable<ComplexBeanModel> cellTable = new CellTable<ColumnsTest.ComplexBeanModel>();
+
+		c.configure(cellTable);
 	}
 
 	private native int getColumnCount(CellTable<?> table) /*-{
-		table.@com.google.gwt.user.cellview.client.CellTable::columns.@java.util.ArrayList::size()();
+		return table.@com.google.gwt.user.cellview.client.CellTable::columns.@java.util.List::size()();
 	}-*/;
 }

@@ -82,7 +82,7 @@
 							<goal>test</goal>
 						</goals>
 						<configuration>
-							<includes>**/client/**.java</includes>
+							<includes>**/GWT**Suite.java</includes>
 							<mode>${gwt.test.mode}</mode>
 						</configuration>
 					</execution>
@@ -94,6 +94,7 @@
 				<configuration>
 					<excludes>
 						<exclude>**/client/**.java</exclude>
+						<exclude>**/GWT**.java</exclude>
 					</excludes>
 				</configuration>
 			</plugin>

@@ -92,7 +92,7 @@ public class ColumnsGenerator extends Generator {
 			sw.println("private %1$s factory;", columnSet.getFactoryClassName());
 			sw.println("public void setFactory(%1$s factory) {", columnSet.getFactoryClassName());
 			sw.indent();
-			sw.println("assert this.factory == null && factory != null: \"Factory cannot be reset, and factory cannot be set as null\";");
+			sw.println("if (this.factory != null || factory == null) { throw new IllegalStateException(\"Factory cannot be reset, and factory cannot be set as null\");}");
 			sw.println("this.factory = factory;");
 			sw.outdent();
 			sw.println("}");
