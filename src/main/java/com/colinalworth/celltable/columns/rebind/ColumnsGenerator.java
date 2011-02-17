@@ -92,7 +92,7 @@ public class ColumnsGenerator extends Generator {
 			sw.println("private %1$s factory;", columnSet.getFactoryClassName());
 			sw.println("public void setFactory(%1$s factory) {", columnSet.getFactoryClassName());
 			sw.indent();
-			sw.println("if (this.factory != null || factory == null) { throw new IllegalStateException(\"Factory cannot be reset, and factory cannot be set as null\");}");
+			sw.println("assert factory != null && this.factory == null : \"Factory cannot be reset, and factory cannot be set as null\";");
 			sw.println("this.factory = factory;");
 			sw.outdent();
 			sw.println("}");
@@ -167,6 +167,9 @@ public class ColumnsGenerator extends Generator {
 		// actual heavy-lifting one
 		sw.println("public final void configure(CellTable<%1$s> table, HasDataEditor<%1$s> ed) {", columnSet.getBeanName());
 		sw.indent();
+		if (columnSet.hasFactory()) {
+			sw.println("assert factory != null : \"setFactory() must be called before configure() can be called.\";");
+		}
 		for (ColumnModel c : columnSet.getColumnModels()) {
 			//wire up the cell and column
 			sw.println("%1$s();", c.getMethodName());

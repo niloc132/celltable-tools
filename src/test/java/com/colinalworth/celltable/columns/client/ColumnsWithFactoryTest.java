@@ -70,17 +70,14 @@ public class ColumnsWithFactoryTest extends GWTTestCase {
 	}
 
 	public void testBreaksWithNoFactory() {
-		TextCell cell = new TextCell();
-
 		SimpleColumnsWithFactory columns = GWT.create(SimpleColumnsWithFactory.class);
 
-		//test always fails to finish...
 		CellTable<IBeanModel> table = new CellTable<ColumnsWithFactoryTest.IBeanModel>();
 
 		try {
 			columns.configure(table);
 			fail("Fail - exception should occur");
-		} catch (Exception ex) {
+		} catch (AssertionError ex) {
 			//pass
 		}
 	}
@@ -88,13 +85,10 @@ public class ColumnsWithFactoryTest extends GWTTestCase {
 	public void testBreaksWithNullFactory() {
 		SimpleColumnsWithFactory columns = GWT.create(SimpleColumnsWithFactory.class);
 
-		//test always fails to finish...
-		//CellTable<IBeanModel> table = new CellTable<ColumnsWithFactoryTest.IBeanModel>();
-
 		try {
 			columns.setFactory(null);
 			fail("Fail - exception should occur");
-		} catch (Exception ex) {
+		} catch (AssertionError ex) {
 			//pass
 		}
 	}
@@ -107,14 +101,11 @@ public class ColumnsWithFactoryTest extends GWTTestCase {
 
 		SimpleColumnsWithFactory columns = GWT.create(SimpleColumnsWithFactory.class);
 
-		//test always fails to finish...
-		CellTable<IBeanModel> table = new CellTable<ColumnsWithFactoryTest.IBeanModel>();
-
 		try {
 			columns.setFactory(f1);
 			columns.setFactory(f2);
 			fail("Fail - exception should occur");
-		} catch (Exception ex) {
+		} catch (AssertionError ex) {
 			//pass
 		}
 	}
