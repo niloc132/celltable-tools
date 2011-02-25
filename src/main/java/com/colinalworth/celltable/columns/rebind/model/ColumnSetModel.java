@@ -26,8 +26,10 @@ import org.apache.commons.lang.StringUtils;
 
 import com.colinalworth.celltable.columns.client.Columns;
 import com.colinalworth.celltable.columns.client.Columns.Alignment;
+import com.colinalworth.celltable.columns.client.Columns.ConvertedWith;
 import com.colinalworth.celltable.columns.client.Columns.Editable;
 import com.colinalworth.celltable.columns.client.Columns.Header;
+import com.colinalworth.celltable.columns.client.Columns.Sortable;
 import com.colinalworth.celltable.columns.client.ColumnsWithFactory;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.core.ext.GeneratorContext;
@@ -202,6 +204,14 @@ public class ColumnSetModel {
 		}
 
 		public String getGetterInModel(String model) {
+			String getter = getGetterInModelWithoutDataConverter(model);
+			if (method.isAnnotationPresent(ConvertedWith.class)) {
+				return String.format("GWT.<%1$s>create(%1$s.class).fromModelToCell(%2$s)", Name.getSourceNameForClass(method.getAnnotation(ConvertedWith.class).value()), getter);
+			}
+			return getter;
+		}
+
+		private String getGetterInModelWithoutDataConverter(String model) {
 			if (getPath().length() == 0) {
 				return model;
 			}
@@ -223,8 +233,17 @@ public class ColumnSetModel {
 		}
 
 		public String getSetterInModel(String model, String value) {
+			String setter = getSetterInModelWithoutDataConverter(model, value);
+			if (method.isAnnotationPresent(ConvertedWith.class)) {
+				return String.format("%1$s.%2$s(GWT.<%3$s>create(%3$s.class).fromCellToModel(%4$s))", model, setter, Name.getSourceNameForClass(method.getAnnotation(ConvertedWith.class).value()), value);
+			}
+			return setter;
+		}
+
+		private String getSetterInModelWithoutDataConverter(String model,
+				String value) {
 			if (getPath().length() == 0) {
-				throw new RuntimeException("Cannot call setters for @Path(\"\")");
+				throw new RuntimeException("Cannot call setters for @Path(\"\") at this time.");
 			}
 			String[] paths = getPath().split(Pattern.quote("."));
 			StringBuilder sb = new StringBuilder(model);
@@ -329,6 +348,21 @@ public class ColumnSetModel {
 				}
 			}
 			return "null";
+		}
+
+		/**
+		 * @return
+		 */
+		public boolean isSortable() {
+			return method.isAnnotationPresent(Sortable.class);
+		}
+
+		/**
+		 * @return
+		 */
+		public JClassType getFieldUpdaterType() {
+			assert isEditable() : "Cannot get a FieldUpdater type if not marked as @Editable";
+			return context.getTypeOracle().findType(Name.getSourceNameForClass(method.getAnnotation(Editable.class).value()));
 		}
 	}
 }

@@ -19,6 +19,8 @@ package com.colinalworth.celltable.columns.client;
 import java.util.Date;
 
 import com.google.gwt.cell.client.DateCell;
+import com.google.gwt.cell.client.EditTextCell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
@@ -72,6 +74,47 @@ public class ColumnsTest extends GWTTestCase {
 
 		c.configure(cellTable);
 	}
+
+	interface DataWithConverter extends Columns<ComplexBeanModel> {
+		@ConvertedWith(DateToYearConverter.class)
+		@Path("dateObj")
+		TextCell formattedDateCell();
+	}
+	public static class DateToYearConverter implements DataConverter<Date, String> {
+		public Date fromCellToModel(String cell) {
+			return new Date(Date.parse(cell));
+		}
+		public String fromModelToCell(Date model) {
+			return model.toGMTString();
+		}
+	}
+
+	public void testDataConverter() {
+		DataWithConverter c = GWT.create(DataWithConverter.class);
+		CellTable<ComplexBeanModel> cellTable = new CellTable<ColumnsTest.ComplexBeanModel>();
+		GWT.create(DateToYearConverter.class);
+		c.configure(cellTable);
+	}
+	interface EditableBeanModel {
+		void setStringProp(String value);
+		String getStringProp();
+	}
+	interface DataWithFieldUpdater extends Columns<EditableBeanModel> {
+		@Editable(EditableBeanModelFieldUpdater.class)
+		EditTextCell stringProp();
+	}
+	static class EditableBeanModelFieldUpdater implements FieldUpdater<EditableBeanModel, String> {
+		public void update(int arg0, EditableBeanModel arg1, String arg2) {
+			arg1.setStringProp(arg2 + "...");
+		}
+	}
+	public void testSpecifiedFieldUpdater() {
+		DataWithFieldUpdater c = GWT.create(DataWithFieldUpdater.class);
+		CellTable<EditableBeanModel> cellTable = new CellTable<EditableBeanModel>();
+
+		c.configure(cellTable);
+	}
+
 
 	private native int getColumnCount(CellTable<?> table) /*-{
 		return table.@com.google.gwt.user.cellview.client.CellTable::columns.@java.util.List::size()();

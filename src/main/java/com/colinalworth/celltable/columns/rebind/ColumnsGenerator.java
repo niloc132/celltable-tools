@@ -27,8 +27,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
+import com.google.gwt.core.ext.TreeLogger.Type;
 import com.google.gwt.core.ext.UnableToCompleteException;
 import com.google.gwt.core.ext.typeinfo.JClassType;
+import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
+import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Name;
 import com.google.gwt.editor.client.adapters.HasDataEditor;
@@ -45,14 +48,14 @@ import com.google.gwt.user.rebind.SourceWriter;
  */
 public class ColumnsGenerator extends Generator {
 	//private TreeLogger logger;
-	//private GeneratorContext context;
+	private GeneratorContext context;
 
 	private Set<String> names = new HashSet<String>();
 
 	@Override
 	public String generate(TreeLogger logger, GeneratorContext context, String typeName) throws UnableToCompleteException {
 		//this.logger = logger;
-		//this.context = context;
+		this.context = context;
 
 		TypeOracle oracle = context.getTypeOracle();
 		JClassType toGenerate = oracle.findType(typeName).isInterface();
@@ -132,20 +135,32 @@ public class ColumnsGenerator extends Generator {
 			sw.println("};");
 
 			if (c.isEditable()) {
-				sw.println("%1$s.setFieldUpdater(new FieldUpdater<%2$s,%3$s>() {", c.getColumnFieldName(), columnSet.getBeanName(), c.getCellDataTypeName());
-				sw.indent();
+				if (c.getFieldUpdaterType().equals(context.getTypeOracle().findType(Name.getSourceNameForClass(FieldUpdater.class)))) {
+					sw.println("%1$s.setFieldUpdater(new FieldUpdater<%2$s,%3$s>() {", c.getColumnFieldName(), columnSet.getBeanName(), c.getCellDataTypeName());
+					sw.indent();
 
-				sw.println("public void update(int index, %1$s object, %2$s value) {", columnSet.getBeanName(), c.getCellDataTypeName());
-				sw.indent();
-				sw.println("%1$s;", c.getSetterInModel("object", "value"));
-				sw.outdent();
-				sw.println("}");
+					sw.println("public void update(int index, %1$s object, %2$s value) {", columnSet.getBeanName(), c.getCellDataTypeName());
+					sw.indent();
+					sw.println("%1$s;", c.getSetterInModel("object", "value"));
+					sw.outdent();
+					sw.println("}");
 
-				sw.outdent();// end anon FieldUpdater class
-				sw.println("});");
+					sw.outdent();// end anon FieldUpdater class
+					sw.println("});");
+				} else {
+					sw.println("%1$s.setFieldUpdater(GWT.<%2$s>create(%2$s.class));", c.getColumnFieldName(), c.getFieldUpdaterType().getQualifiedSourceName());
+				}
 			}
 			sw.println("%1$s.setHorizontalAlignment(%2$s);", c.getColumnFieldName(), c.getHorizontalAlignment());
 			sw.println("%1$s.setVerticalAlignment(%2$s);", c.getColumnFieldName(), c.getVerticalAlignment());
+
+			if (supportsSortable()) {
+				sw.println("%1$s.setSortable(%2$s);", c.isSortable());
+			} else {
+				if (c.isSortable()) {
+					logger.log(Type.WARN, "Your version of GWT does not appear to support Column.setSortable, compilation may fail.");
+				}
+			}
 			//end column creation/setup
 
 			sw.outdent();
@@ -189,5 +204,12 @@ public class ColumnsGenerator extends Generator {
 		sw.commit(logger);
 
 		return factory.getCreatedClassName();
+	}
+
+	/**
+	 * @return
+	 */
+	private boolean supportsSortable() {
+		return context.getTypeOracle().findType(Name.getSourceNameForClass(Column.class)).findMethod("setSortable", new JType[] {JPrimitiveType.BOOLEAN}) != null;
 	}
 }

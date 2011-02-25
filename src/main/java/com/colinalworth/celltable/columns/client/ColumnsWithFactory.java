@@ -17,9 +17,25 @@
 package com.colinalworth.celltable.columns.client;
 
 /**
- * @author colin
+ * Works exactly like {@link Columns}, except that a factory type (and instance) may be specified.
+ * Cell instances will be obtained from identically named methods in the factory class instead of
+ * from GWT.create(). Only methods from ColumnsWithFactory subtypes that have a matching instance
+ * in the class F will be obtained from the factory - if there is a method in the interface that 
+ * does not have a corresponding method in the factory, the Cell will be GWT.create'd.
+ * 
+ * Factory must be set before the Cell instance is obtained from the method call or configure() is 
+ * called
+ * 
+ * @author Colin Alworth
  *
  */
 public interface ColumnsWithFactory<T, F> extends Columns<T> {
+	/**
+	 * Sets the factory that should be used to get some or all of the Cell instances.
+	 * 
+	 * May only be called once.
+	 * 
+	 * @param factory
+	 */
 	void setFactory(F factory);
 }
