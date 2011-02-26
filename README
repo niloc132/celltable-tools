@@ -1,0 +1,51 @@
+This project intends to provide tools to help with the GWT CellTable class, to make it as easy to use and boilerplate-free as the Editor and UiBinder code has done for many widgets.
+
+Cell and Column creation
+Best way to explain would be by way of example. http://code.google.com/webtoolkit/doc/latest/DevGuideUiCellWidgets.html#celltable provides a sample demonstrating cell and column creation, simplified here to just that part:
+    // Create a CellTable.
+    CellTable<Contact> table = new CellTable<Contact>();
+
+    // Create name column.
+    TextColumn<Contact> nameColumn = new TextColumn<Contact>() {
+      @Override
+      public String getValue(Contact contact) {
+        return contact.name;
+      }
+    };
+
+    // Create address column.
+    TextColumn<Contact> addressColumn = new TextColumn<Contact>() {
+      @Override
+      public String getValue(Contact contact) {
+        return contact.address;
+      }
+    };
+
+    // Add the columns.
+    table.addColumn(nameColumn, "Name");
+    table.addColumn(addressColumn, "Address");
+
+A TextColumn object is a Column<T,String>, with its Cell instance set to TextCell. The first column shown here could be also written as 
+    // Create name column.
+    Column<Contact, String> nameColumn = new Column<Contact, String>(new TextCell()) {
+      @Override
+      public String getValue(Contact contact) {
+        return contact.name;
+      }
+    };
+
+Instead, as most of this seems to be rather unnecessary code (especially given what the Editor framework has brought), I suggest that the columns be declared as simply as possible
+    interface ContactColumns extends Columns<Contact> {
+      @Header("Name")
+      TextCell name();
+      @Header("Address")
+      TextCell address();
+    }
+and can be added into the ui as follows:
+    // Create a CellTable.
+    CellTable<Contact> table = new CellTable<Contact>();
+    // Add the columns
+    ContactColumns columns = GWT.create(ContactColumns.class);
+    columns.configure(table);
+
+Ta da!
