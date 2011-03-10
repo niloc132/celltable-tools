@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.colinalworth.celltable.columns.client.HasDataFlushableEditor;
 import com.colinalworth.celltable.columns.rebind.model.ColumnSetModel;
 import com.colinalworth.celltable.columns.rebind.model.ColumnSetModel.ColumnModel;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -34,7 +35,6 @@ import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Name;
-import com.google.gwt.editor.client.adapters.HasDataEditor;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
@@ -79,7 +79,7 @@ public class ColumnsGenerator extends Generator {
 
 		factory.addImport(Name.getSourceNameForClass(GWT.class));
 		factory.addImport(Name.getSourceNameForClass(CellTable.class));
-		factory.addImport(Name.getSourceNameForClass(HasDataEditor.class));
+		factory.addImport(Name.getSourceNameForClass(HasDataFlushableEditor.class));
 		factory.addImport(Name.getSourceNameForClass(Column.class));
 		factory.addImport(Name.getSourceNameForClass(HasHorizontalAlignment.class));
 		factory.addImport(Name.getSourceNameForClass(HasVerticalAlignment.class));
@@ -110,7 +110,7 @@ public class ColumnsGenerator extends Generator {
 			sw.println("private Column<%1$s,%2$s> %3$s;", columnSet.getBeanName(), c.getCellDataTypeName(), c.getColumnFieldName());
 			sw.println();
 
-			// make the method
+			// make the method: public MyCell myDataMember() {
 			//sw.println("@Override");//jdk 5 doesnt like this
 			sw.println("public %1$s %2$s() {", c.getCellClassName(), c.getMethodName());
 			sw.indent();
@@ -120,7 +120,7 @@ public class ColumnsGenerator extends Generator {
 			//create the cell
 			sw.println("%1$s = %2$s;", c.getCellFieldName(), c.getCellCreateExpression());
 
-			//create the columns
+			//create the column - probably should be done later in the case of using HasDataFlushableEditor
 			sw.println("%1$s = new Column<%2$s,%3$s> (%4$s) {", c.getColumnFieldName(), columnSet.getBeanName(), c.getCellDataTypeName(), c.getCellFieldName());
 			sw.indent();
 
@@ -134,8 +134,10 @@ public class ColumnsGenerator extends Generator {
 			sw.outdent();// end anon Column class
 			sw.println("};");
 
+			// Refactor at least this part out, in anticipation of a proper link to the Editor framework
+			// TODO this is done by replacement right now, fix that.
 			if (c.isEditable()) {
-				if (c.getFieldUpdaterType().equals(context.getTypeOracle().findType(Name.getSourceNameForClass(FieldUpdater.class)))) {
+				if (!c.hasCustomFieldUpdater()) {
 					sw.println("%1$s.setFieldUpdater(new FieldUpdater<%2$s,%3$s>() {", c.getColumnFieldName(), columnSet.getBeanName(), c.getCellDataTypeName());
 					sw.indent();
 
@@ -180,7 +182,7 @@ public class ColumnsGenerator extends Generator {
 		sw.println("}");
 
 		// actual heavy-lifting one
-		sw.println("public final void configure(CellTable<%1$s> table, HasDataEditor<%1$s> ed) {", columnSet.getBeanName());
+		sw.println("public final void configure(CellTable<%1$s> table, HasDataFlushableEditor<%1$s> ed) {", columnSet.getBeanName());
 		sw.indent();
 		if (columnSet.hasFactory()) {
 			sw.println("assert factory != null : \"setFactory() must be called before configure() can be called.\";");
@@ -188,6 +190,24 @@ public class ColumnsGenerator extends Generator {
 		for (ColumnModel c : columnSet.getColumnModels()) {
 			//wire up the cell and column
 			sw.println("%1$s();", c.getMethodName());
+
+			if (c.isEditable() && !c.hasCustomFieldUpdater()) {
+				// if there is an editor, replace the FieldUpdater
+				sw.println("if (ed != null) {");
+				sw.indent();
+				sw.println("final FieldUpdater<%1$s, %2$s> wrapped = %3$s.getFieldUpdater();", columnSet.getBeanName() , c.getCellDataTypeName() ,c.getColumnFieldName());
+				sw.println("%1$s.setFieldUpdater(new ed.PendingFieldUpdateChange<%2$s>(){", c.getColumnFieldName(), c.getCellDataTypeName());
+				sw.indent();
+				sw.println("public void commit(int index, %1$s object, %2$s value) {", columnSet.getBeanName(), c.getCellDataTypeName());
+				sw.indent();
+				sw.println("return wrapped.update(index, object, value);");
+				sw.outdent();
+				sw.println("}");
+				sw.outdent();
+				sw.println("});");
+				sw.outdent();
+				sw.println("}");
+			}
 
 			// attach the column
 			sw.println("table.addColumn(%1$s, %2$s);", c.getColumnFieldName(), c.getHeaderValue());

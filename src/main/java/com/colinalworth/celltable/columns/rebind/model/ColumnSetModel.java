@@ -32,6 +32,7 @@ import com.colinalworth.celltable.columns.client.Columns.Header;
 import com.colinalworth.celltable.columns.client.Columns.Sortable;
 import com.colinalworth.celltable.columns.client.ColumnsWithFactory;
 import com.google.gwt.cell.client.Cell;
+import com.google.gwt.cell.client.FieldUpdater;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -283,6 +284,10 @@ public class ColumnSetModel {
 			if (m != null) {
 				return m;
 			}
+			//			JField field = owningType.getField(propertyName);
+			//			if (field != null) {
+			//				return 
+			//			}
 			throw new RuntimeException("Class " + owningType + " doesn't seem to have get/is/has methods for the property " + propertyName);
 		}
 		private JMethod findGetMethod(JClassType type, String method) {
@@ -363,6 +368,13 @@ public class ColumnSetModel {
 		public JClassType getFieldUpdaterType() {
 			assert isEditable() : "Cannot get a FieldUpdater type if not marked as @Editable";
 			return context.getTypeOracle().findType(Name.getSourceNameForClass(method.getAnnotation(Editable.class).value()));
+		}
+
+		/**
+		 * @return
+		 */
+		public boolean hasCustomFieldUpdater() {
+			return !getFieldUpdaterType().equals(context.getTypeOracle().findType(Name.getSourceNameForClass(FieldUpdater.class)));
 		}
 	}
 }

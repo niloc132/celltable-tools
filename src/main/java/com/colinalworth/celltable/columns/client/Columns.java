@@ -23,7 +23,6 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.editor.client.adapters.HasDataEditor;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 
@@ -64,13 +63,20 @@ public interface Columns<T> {
 	void configure(CellTable<T> cellTable);
 
 	/**
-	 * Currently the same as configure(CellTable<T>), there is no additional binding needed to use 
-	 * the editor.
+	 * As configure(CellTable<T>), except will also bind the columns to the editor, so that when the
+	 * editor system flushes, the data will be applied to the model.
+	 * 
+	 * Because data will not be applied to the model until the flush occurs, some data can be
+	 * somewhat inconsistent - the Cells will need to track their changed data correctly until the
+	 * data is flushed, and other cells won't be able to get the updated value until then.
+	 * 
+	 * TODO Consider adding a configuration option to allow immediate flushing (other than not
+	 * passing an editor)
 	 * 
 	 * @param cellTable
 	 * @param editor
 	 */
-	void configure(CellTable<T> cellTable, HasDataEditor<T> editor);
+	void configure(CellTable<T> cellTable, HasDataFlushableEditor<T> editor);
 
 
 	/**
@@ -119,8 +125,11 @@ public interface Columns<T> {
 	 * Will not work for @Path(""). Nested paths are supported.
 	 * 
 	 * There is a known issue in GWT (http://code.google.com/p/google-web-toolkit/issues/detail?id=5981)
-	 * where a CellTable attached to an Editor through HasDataEditor cannot have values changed. This
+	 * where a CellTable attached to an Editor through HasDataFlushableEditor cannot have values changed. This
 	 * annotation does nothing to help with the issue.
+	 * 
+	 * 
+	 * This can also be applied to the entire type
 	 *
 	 */
 	@Documented

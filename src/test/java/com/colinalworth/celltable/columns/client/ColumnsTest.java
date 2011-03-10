@@ -115,7 +115,6 @@ public class ColumnsTest extends GWTTestCase {
 		c.configure(cellTable);
 	}
 
-
 	private native int getColumnCount(CellTable<?> table) /*-{
 		return table.@com.google.gwt.user.cellview.client.CellTable::columns.@java.util.List::size()();
 	}-*/;

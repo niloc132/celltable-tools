@@ -33,7 +33,7 @@ public interface ColumnsWithFactory<T, F> extends Columns<T> {
 	/**
 	 * Sets the factory that should be used to get some or all of the Cell instances.
 	 * 
-	 * May only be called once.
+	 * May only be called once per instance.
 	 * 
 	 * @param factory
 	 */
