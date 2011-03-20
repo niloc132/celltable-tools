@@ -157,7 +157,7 @@ public class ColumnsGenerator extends Generator {
 			sw.println("%1$s.setVerticalAlignment(%2$s);", c.getColumnFieldName(), c.getVerticalAlignment());
 
 			if (supportsSortable()) {
-				sw.println("%1$s.setSortable(%2$s);", c.isSortable());
+				sw.println("%1$s.setSortable(%2$s);", c.getColumnFieldName(), c.isSortable());
 			} else {
 				if (c.isSortable()) {
 					logger.log(Type.WARN, "Your version of GWT does not appear to support Column.setSortable, compilation may fail.");
