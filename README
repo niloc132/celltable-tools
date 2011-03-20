@@ -1,6 +1,6 @@
 This project intends to provide tools to help with the GWT CellTable class, to make it as easy to use and boilerplate-free as the Editor and UiBinder code has done for many widgets.
 
-Cell and Column creation
+### Cell and Column creation
 Best way to explain would be by way of example. http://code.google.com/webtoolkit/doc/latest/DevGuideUiCellWidgets.html#celltable provides a sample demonstrating cell and column creation, simplified here to just that part:
     // Create a CellTable.
     CellTable<Contact> table = new CellTable<Contact>();
@@ -48,4 +48,5 @@ and can be added into the ui as follows:
     ContactColumns columns = GWT.create(ContactColumns.class);
     columns.configure(table);
 
-Ta da!
+### Building
+By default, this is set up to work with 2.2, though 2.1 is supported as well. When building, use the profile 'pre-2.2', and specify 'pre-2.2' as a classifier in the dependency as well.
