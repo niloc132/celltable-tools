@@ -21,7 +21,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.google.gwt.cell.client.FieldUpdater;
-import com.google.gwt.editor.client.Editor;
+import com.google.gwt.editor.client.EditorDelegate;
+import com.google.gwt.editor.client.ValueAwareEditor;
 import com.google.gwt.editor.client.adapters.EditorSource;
 import com.google.gwt.editor.client.adapters.ListEditor;
 import com.google.gwt.user.client.Command;
@@ -37,8 +38,8 @@ import com.google.gwt.view.client.HasData;
  * @author colin
  *
  */
-public class HasDataFlushableEditor<T> extends ListEditor<T, Editor<T>> {
-	static class HasDataEditorSource<T> extends EditorSource<Editor<T>> {
+public class HasDataFlushableEditor<T> extends ListEditor<T, ValueAwareEditor<T>> {
+	static class HasDataEditorSource<T> extends EditorSource<ValueAwareEditor<T>> {
 		private final HasData<T> data;
 
 		public HasDataEditorSource(HasData<T> data) {
@@ -51,12 +52,12 @@ public class HasDataFlushableEditor<T> extends ListEditor<T, Editor<T>> {
 		}
 
 		@Override
-		public void setIndex(Editor<T> editor, int index) {
+		public void setIndex(ValueAwareEditor<T> editor, int index) {
 			((IndexedEditor<T>) editor).setIndex(index);
 		}
 	}
 
-	static class IndexedEditor<Q> implements Editor<Q> {
+	static class IndexedEditor<Q> implements ValueAwareEditor<Q> {
 		private int index;
 		private Q value;
 		private final HasData<Q> data;
@@ -66,16 +67,15 @@ public class HasDataFlushableEditor<T> extends ListEditor<T, Editor<T>> {
 			this.data = data;
 		}
 
-		@Ignore
 		public Q getValue() {
 			return value;
 		}
-		@Ignore
+
 		public void setIndex(int index) {
 			this.index = index;
 			push();
 		}
-		@Ignore
+
 		public void setValue(Q value) {
 			this.value = value;
 			push();
@@ -83,6 +83,18 @@ public class HasDataFlushableEditor<T> extends ListEditor<T, Editor<T>> {
 
 		private void push() {
 			data.setRowData(index, Collections.singletonList(value));
+		}
+
+		public void flush() {
+
+		}
+
+		public void onPropertyChange(String... paths) {
+
+		}
+
+		public void setDelegate(EditorDelegate<Q> delegate) {
+
 		}
 	}
 
