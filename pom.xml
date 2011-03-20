@@ -78,7 +78,6 @@
 						</goals>
 						<configuration>
 							<includes>**/GWT**Suite.java</includes>
-							<mode></mode>
 						</configuration>
 					</execution>
 				</executions>
