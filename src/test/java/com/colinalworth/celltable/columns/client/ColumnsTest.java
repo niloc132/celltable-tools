@@ -99,6 +99,21 @@ public class ColumnsTest extends GWTTestCase {
 		void setStringProp(String value);
 		String getStringProp();
 	}
+	interface SimpleEditableColumns extends Columns<EditableBeanModel> {
+		@Editable
+		EditTextCell stringProp();
+	}
+
+
+	public void testEditableColumns() {
+		SimpleEditableColumns c = GWT.create(SimpleEditableColumns.class);
+		CellTable<EditableBeanModel> cellTable = new CellTable<EditableBeanModel>();
+		HasDataFlushableEditor<EditableBeanModel> editor = HasDataFlushableEditor.of(cellTable);
+
+		c.configure(cellTable, editor);
+	}
+
+
 	interface DataWithFieldUpdater extends Columns<EditableBeanModel> {
 		@Editable(EditableBeanModelFieldUpdater.class)
 		EditTextCell stringProp();
@@ -111,8 +126,9 @@ public class ColumnsTest extends GWTTestCase {
 	public void testSpecifiedFieldUpdater() {
 		DataWithFieldUpdater c = GWT.create(DataWithFieldUpdater.class);
 		CellTable<EditableBeanModel> cellTable = new CellTable<EditableBeanModel>();
+		HasDataFlushableEditor<EditableBeanModel> editor = HasDataFlushableEditor.of(cellTable);
 
-		c.configure(cellTable);
+		c.configure(cellTable, editor);
 	}
 
 	private native int getColumnCount(CellTable<?> table) /*-{

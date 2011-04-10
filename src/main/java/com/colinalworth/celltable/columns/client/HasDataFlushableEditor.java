@@ -55,6 +55,15 @@ public class HasDataFlushableEditor<T> extends ListEditor<T, ValueAwareEditor<T>
 		public void setIndex(ValueAwareEditor<T> editor, int index) {
 			((IndexedEditor<T>) editor).setIndex(index);
 		}
+
+		/* (non-Javadoc)
+		 * @see com.google.gwt.editor.client.adapters.EditorSource#dispose(com.google.gwt.editor.client.Editor)
+		 */
+		@Override
+		public void dispose(ValueAwareEditor<T> subEditor) {
+			data.setRowCount(data.getRowCount() - 1);
+			((IndexedEditor<T>)subEditor).remove();
+		}
 	}
 
 	static class IndexedEditor<Q> implements ValueAwareEditor<Q> {
@@ -95,6 +104,8 @@ public class HasDataFlushableEditor<T> extends ListEditor<T, ValueAwareEditor<T>
 
 		public void setDelegate(EditorDelegate<Q> delegate) {
 
+		}
+		public void remove() {
 		}
 	}
 

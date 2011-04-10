@@ -196,11 +196,11 @@ public class ColumnsGenerator extends Generator {
 				sw.println("if (ed != null) {");
 				sw.indent();
 				sw.println("final FieldUpdater<%1$s, %2$s> wrapped = %3$s.getFieldUpdater();", columnSet.getBeanName() , c.getCellDataTypeName() ,c.getColumnFieldName());
-				sw.println("%1$s.setFieldUpdater(new ed.PendingFieldUpdateChange<%2$s>(){", c.getColumnFieldName(), c.getCellDataTypeName());
+				sw.println("%1$s.setFieldUpdater(ed.new PendingFieldUpdateChange<%2$s>(){", c.getColumnFieldName(), c.getCellDataTypeName());
 				sw.indent();
 				sw.println("public void commit(int index, %1$s object, %2$s value) {", columnSet.getBeanName(), c.getCellDataTypeName());
 				sw.indent();
-				sw.println("return wrapped.update(index, object, value);");
+				sw.println("wrapped.update(index, object, value);");
 				sw.outdent();
 				sw.println("}");
 				sw.outdent();
