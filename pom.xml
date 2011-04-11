@@ -5,7 +5,26 @@
 	<artifactId>celltable-tools</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
-	<name>Tools to help in using the GWT CellTable</name>
+	<name>GWT CellTable Tools</name>
+	<description>Tools to make it easier to work with GWT's CellTable.</description>
+	<url>http://niloc132.github.com/celltable-tools</url>
+	<scm>
+		<connection>scm:git:ssh://github.com/niloc132/celltable-tools.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/niloc132/celltable-tools.git</developerConnection>
+		<url>https://github.com/niloc132/celltable-tools/</url>
+	</scm>
+	<developers>
+		<developer>
+			<name>Colin Alworth</name>
+			<email>niloc132@gmail.com</email>
+		</developer>
+	</developers>
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
 	<properties>
 		<!-- testing setup -->
 		<gwt.test.mode>htmlunit</gwt.test.mode>
@@ -111,4 +130,45 @@
 			</properties>
 		</profile>
 	</profiles>
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.6</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>taglist-maven-plugin</artifactId>
+				<version>2.4</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<targetJdk>${java.compiler.version}</targetJdk>
+					<rulesets>
+						<ruleset>/rulesets/basic.xml</ruleset>
+						<ruleset>/rulesets/braces.xml</ruleset>
+						<ruleset>/rulesets/finalizers.xml</ruleset>
+						<ruleset>/rulesets/imports.xml</ruleset>
+						<ruleset>/rulesets/javabeans.xml</ruleset>
+						<ruleset>/rulesets/junit.xml</ruleset>
+						<ruleset>/rulesets/logging-java.xml</ruleset>
+						<ruleset>/rulesets/unusedcode.xml</ruleset>
+					</rulesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</reporting>
 </project>
