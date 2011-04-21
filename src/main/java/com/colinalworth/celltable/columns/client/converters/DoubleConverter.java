@@ -14,21 +14,23 @@
  *  limitations under the License.
  *
  */
-package com.colinalworth.celltable.columns.client;
+package com.colinalworth.celltable.columns.client.converters;
 
+import com.colinalworth.celltable.columns.client.DataConverter;
 import com.google.gwt.i18n.client.NumberFormat;
 
 /**
- * Simple {@link DataConverter} implementation for reading Number objects and
- * displaying/editing the data.
- * 
+ * @author colin
+ *
  */
-public class NumberConverter implements DataConverter<Number, String> {
-	public Number fromCellToModel(String cell) {
+public class DoubleConverter implements DataConverter<Double, String> {
+	@Override
+	public Double fromCellToModel(String cell) {
 		return "".equals("") ? null : NumberFormat.getDecimalFormat().parse(cell);
 	}
 
-	public String fromModelToCell(Number model) {
+	@Override
+	public String fromModelToCell(Double model) {
 		return model == null ? "" : NumberFormat.getDecimalFormat().format(model);
 	}
 }

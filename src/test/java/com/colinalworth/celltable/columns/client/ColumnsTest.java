@@ -81,9 +81,11 @@ public class ColumnsTest extends GWTTestCase {
 		TextCell formattedDateCell();
 	}
 	public static class DateToYearConverter implements DataConverter<Date, String> {
+		@SuppressWarnings("deprecation")
 		public Date fromCellToModel(String cell) {
 			return new Date(Date.parse(cell));
 		}
+		@SuppressWarnings("deprecation")
 		public String fromModelToCell(Date model) {
 			return model.toGMTString();
 		}

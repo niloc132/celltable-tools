@@ -234,10 +234,10 @@ public class ColumnSetModel {
 		}
 
 		public String getSetterInModel(String model, String value) {
-			String setter = getSetterInModelWithoutDataConverter(model, value);
 			if (method.isAnnotationPresent(ConvertedWith.class)) {
-				return String.format("%1$s.%2$s(GWT.<%3$s>create(%3$s.class).fromCellToModel(%4$s))", model, setter, Name.getSourceNameForClass(method.getAnnotation(ConvertedWith.class).value()), value);
+				value = String.format("GWT.<%1$s>create(%1$s.class).fromCellToModel(%2$s)", Name.getSourceNameForClass(method.getAnnotation(ConvertedWith.class).value()), value);
 			}
+			String setter = getSetterInModelWithoutDataConverter(model, value);
 			return setter;
 		}
 
