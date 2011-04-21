@@ -244,10 +244,10 @@
 <a class="jxr_linenumber" name="234" href="#234">234</a> 		}
 <a class="jxr_linenumber" name="235" href="#235">235</a> 
 <a class="jxr_linenumber" name="236" href="#236">236</a> 		<strong class="jxr_keyword">public</strong> String getSetterInModel(String model, String value) {
-<a class="jxr_linenumber" name="237" href="#237">237</a> 			String setter = getSetterInModelWithoutDataConverter(model, value);
-<a class="jxr_linenumber" name="238" href="#238">238</a> 			<strong class="jxr_keyword">if</strong> (method.isAnnotationPresent(ConvertedWith.<strong class="jxr_keyword">class</strong>)) {
-<a class="jxr_linenumber" name="239" href="#239">239</a> 				<strong class="jxr_keyword">return</strong> String.format(<span class="jxr_string">"%1$s.%2$s(GWT.&lt;%3$s&gt;create(%3$s.class).fromCellToModel(%4$s))"</span>, model, setter, Name.getSourceNameForClass(method.getAnnotation(ConvertedWith.<strong class="jxr_keyword">class</strong>).value()), value);
-<a class="jxr_linenumber" name="240" href="#240">240</a> 			}
+<a class="jxr_linenumber" name="237" href="#237">237</a> 			<strong class="jxr_keyword">if</strong> (method.isAnnotationPresent(ConvertedWith.<strong class="jxr_keyword">class</strong>)) {
+<a class="jxr_linenumber" name="238" href="#238">238</a> 				value = String.format(<span class="jxr_string">"GWT.&lt;%1$s&gt;create(%1$s.class).fromCellToModel(%2$s)"</span>, Name.getSourceNameForClass(method.getAnnotation(ConvertedWith.<strong class="jxr_keyword">class</strong>).value()), value);
+<a class="jxr_linenumber" name="239" href="#239">239</a> 			}
+<a class="jxr_linenumber" name="240" href="#240">240</a> 			String setter = getSetterInModelWithoutDataConverter(model, value);
 <a class="jxr_linenumber" name="241" href="#241">241</a> 			<strong class="jxr_keyword">return</strong> setter;
 <a class="jxr_linenumber" name="242" href="#242">242</a> 		}
 <a class="jxr_linenumber" name="243" href="#243">243</a> 

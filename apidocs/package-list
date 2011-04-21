@@ -1,3 +1,4 @@
 com.colinalworth.celltable.columns.client
+com.colinalworth.celltable.columns.client.converters
 com.colinalworth.celltable.columns.rebind
 com.colinalworth.celltable.columns.rebind.model
