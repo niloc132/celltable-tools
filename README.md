@@ -2,6 +2,7 @@ This project intends to provide tools to help with the GWT CellTable class, to m
 
 ## Cell and Column creation ##
 The best way to explain would be by way of example. http://code.google.com/webtoolkit/doc/latest/DevGuideUiCellWidgets.html#celltable provides a sample demonstrating cell and column creation, simplified here to just the column creation.
+
     // Create a CellTable.
     CellTable<Contact> table = new CellTable<Contact>();
 
@@ -26,6 +27,7 @@ The best way to explain would be by way of example. http://code.google.com/webto
     table.addColumn(addressColumn, "Address");
 
 A `TextColumn` object is a `Column<T,String>`, with its `Cell` instance set to a `TextCell`. The first column shown here could be also written as 
+
     // Create name column.
     Column<Contact, String> nameColumn = new Column<Contact, String>(new TextCell()) {
       @Override
@@ -35,14 +37,17 @@ A `TextColumn` object is a `Column<T,String>`, with its `Cell` instance set to a
     };
 This allows the some simplification of some kinds of columns, but only the ones which Column subclasses are created for - it is not ideal to need to create a new `Column` subtype for each `Cell`.
 
-Instead, as most of this seems to be rather unnecessary code (especially given what the Editor framework has brought), I suggest that the columns be declared as simply as possible
+Instead, as most of this seems to be rather unnecessary code (especially given what the Editor framework has brought), I suggest that the columns be declared as simply as possible.
+
     interface ContactColumns extends Columns<Contact> {
       @Header("Name")
       TextCell name();
       @Header("Address")
       TextCell address();
     }
+
 and can be added into the ui as follows:
+
     // Create a CellTable.
     CellTable<Contact> table = new CellTable<Contact>();
     // Add the columns
@@ -65,6 +70,7 @@ Repository:
         </snapshots>
     </repository>
 Dependency:
+
     <dependency>
         <groupId>com.colinalworth</groupId>
         <artifactId>celltable-tools</artifactId>
