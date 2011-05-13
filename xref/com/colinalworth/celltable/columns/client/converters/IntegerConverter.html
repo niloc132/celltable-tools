@@ -35,7 +35,7 @@
 <a class="jxr_linenumber" name="25" href="#25">25</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../../../com/colinalworth/celltable/columns/client/converters/IntegerConverter.html">IntegerConverter</a> <strong class="jxr_keyword">implements</strong> DataConverter&lt;Integer, String&gt; {
 <a class="jxr_linenumber" name="26" href="#26">26</a>  	@Override
 <a class="jxr_linenumber" name="27" href="#27">27</a>  	<strong class="jxr_keyword">public</strong> Integer fromCellToModel(String cell) {
-<a class="jxr_linenumber" name="28" href="#28">28</a>  		<strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>.equals(<span class="jxr_string">""</span>) ? <strong class="jxr_keyword">null</strong> : Integer.parseInt(cell);
+<a class="jxr_linenumber" name="28" href="#28">28</a>  		<strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>.equals(cell) ? <strong class="jxr_keyword">null</strong> : Integer.parseInt(cell);
 <a class="jxr_linenumber" name="29" href="#29">29</a>  	}
 <a class="jxr_linenumber" name="30" href="#30">30</a>  
 <a class="jxr_linenumber" name="31" href="#31">31</a>  	@Override
