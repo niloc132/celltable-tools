@@ -25,7 +25,7 @@ import com.colinalworth.celltable.columns.client.DataConverter;
 public class IntegerConverter implements DataConverter<Integer, String> {
 	@Override
 	public Integer fromCellToModel(String cell) {
-		return "".equals("") ? null : Integer.parseInt(cell);
+		return "".equals(cell) ? null : Integer.parseInt(cell);
 	}
 
 	@Override

@@ -26,7 +26,7 @@ import com.google.gwt.i18n.client.NumberFormat;
 public class DoubleConverter implements DataConverter<Double, String> {
 	@Override
 	public Double fromCellToModel(String cell) {
-		return "".equals("") ? null : NumberFormat.getDecimalFormat().parse(cell);
+		return "".equals(cell) ? null : NumberFormat.getDecimalFormat().parse(cell);
 	}
 
 	@Override

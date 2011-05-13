@@ -26,7 +26,7 @@ import com.google.gwt.i18n.client.NumberFormat;
  */
 public class NumberConverter implements DataConverter<Number, String> {
 	public Number fromCellToModel(String cell) {
-		return "".equals("") ? null : NumberFormat.getDecimalFormat().parse(cell);
+		return "".equals(cell) ? null : NumberFormat.getDecimalFormat().parse(cell);
 	}
 
 	public String fromModelToCell(Number model) {
