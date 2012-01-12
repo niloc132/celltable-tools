@@ -35,7 +35,7 @@ import com.google.gwt.core.ext.typeinfo.JPrimitiveType;
 import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.core.ext.typeinfo.TypeOracle;
 import com.google.gwt.dev.util.Name;
-import com.google.gwt.user.cellview.client.CellTable;
+import com.google.gwt.user.cellview.client.AbstractCellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HasVerticalAlignment;
@@ -78,7 +78,7 @@ public class ColumnsGenerator extends Generator {
 		factory.addImplementedInterface(typeName);
 
 		factory.addImport(Name.getSourceNameForClass(GWT.class));
-		factory.addImport(Name.getSourceNameForClass(CellTable.class));
+		factory.addImport(Name.getSourceNameForClass(AbstractCellTable.class));
 		factory.addImport(Name.getSourceNameForClass(HasDataFlushableEditor.class));
 		factory.addImport(Name.getSourceNameForClass(Column.class));
 		factory.addImport(Name.getSourceNameForClass(HasHorizontalAlignment.class));
@@ -175,14 +175,14 @@ public class ColumnsGenerator extends Generator {
 		// generate configure methods
 
 		// simple overload
-		sw.println("public final void configure(CellTable<%1$s> table) {", columnSet.getBeanName());
+		sw.println("public final void configure(AbstractCellTable<%1$s> table) {", columnSet.getBeanName());
 		sw.indent();
 		sw.println("configure(table, null);");
 		sw.outdent();
 		sw.println("}");
 
 		// actual heavy-lifting one
-		sw.println("public final void configure(CellTable<%1$s> table, HasDataFlushableEditor<%1$s> ed) {", columnSet.getBeanName());
+		sw.println("public final void configure(AbstractCellTable<%1$s> table, HasDataFlushableEditor<%1$s> ed) {", columnSet.getBeanName());
 		sw.indent();
 		if (columnSet.hasFactory()) {
 			sw.println("assert factory != null : \"setFactory() must be called before configure() can be called.\";");

@@ -26,6 +26,7 @@ import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.junit.client.GWTTestCase;
+import com.google.gwt.user.cellview.client.AbstractCellTable;
 import com.google.gwt.user.cellview.client.CellTable;
 
 /**
@@ -133,7 +134,7 @@ public class ColumnsTest extends GWTTestCase {
 		c.configure(cellTable, editor);
 	}
 
-	private native int getColumnCount(CellTable<?> table) /*-{
-		return table.@com.google.gwt.user.cellview.client.CellTable::columns.@java.util.List::size()();
+	private native int getColumnCount(AbstractCellTable<?> table) /*-{
+		return table.@com.google.gwt.user.cellview.client.AbstractCellTable::columns.@java.util.List::size()();
 	}-*/;
 }

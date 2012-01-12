@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.user.cellview.client.AbstractCellTable;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 
@@ -60,7 +61,7 @@ public interface Columns<T> {
 	 * 
 	 * @param cellTable
 	 */
-	void configure(CellTable<T> cellTable);
+	void configure(AbstractCellTable<T> cellTable);
 
 	/**
 	 * As configure(CellTable<T>), except will also bind the columns to the editor, so that when the
@@ -76,7 +77,7 @@ public interface Columns<T> {
 	 * @param cellTable
 	 * @param editor
 	 */
-	void configure(CellTable<T> cellTable, HasDataFlushableEditor<T> editor);
+	void configure(AbstractCellTable<T> cellTable, HasDataFlushableEditor<T> editor);
 
 
 	/**
