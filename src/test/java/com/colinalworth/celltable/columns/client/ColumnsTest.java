@@ -51,7 +51,7 @@ public class ColumnsTest extends GWTTestCase {
 		SimplePaths cols = GWT.create(SimplePaths.class);
 		CellTable<IBeanModel> cellTable = new CellTable<IBeanModel>();
 		cols.configure(cellTable);
-		assertEquals(1, getColumnCount(cellTable));
+		assertEquals(1, cellTable.getColumnCount());
 	}
 
 	interface ComplexBeanModel {
@@ -132,8 +132,4 @@ public class ColumnsTest extends GWTTestCase {
 
 		c.configure(cellTable, editor);
 	}
-
-	private native int getColumnCount(CellTable<?> table) /*-{
-		return table.@com.google.gwt.user.cellview.client.CellTable::columns.@java.util.List::size()();
-	}-*/;
 }

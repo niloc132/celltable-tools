@@ -35,8 +35,8 @@
 		<gwt.test.mode>htmlunit</gwt.test.mode>
 		
 		<!-- properties to create pre- or post-2.2 builds -->
-		<gwt.version>2.2.0</gwt.version>
-		<gwt.plugin.version>2.2.0</gwt.plugin.version>
+		<gwt.version>2.5.0</gwt.version>
+		<gwt.plugin.version>2.5.0</gwt.plugin.version>
 		<build.classifier></build.classifier>
 	</properties>
 	<dependencies>

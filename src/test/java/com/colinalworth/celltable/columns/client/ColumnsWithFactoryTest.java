@@ -66,7 +66,7 @@ public class ColumnsWithFactoryTest extends GWTTestCase {
 		CellTable<IBeanModel> table = new CellTable<ColumnsWithFactoryTest.IBeanModel>();
 		columns.configure(table);
 
-		assertEquals(2, getColumnCount(table));
+		assertEquals(2, table.getColumnCount());
 	}
 
 	public void testBreaksWithNoFactory() {
@@ -109,8 +109,4 @@ public class ColumnsWithFactoryTest extends GWTTestCase {
 			//pass
 		}
 	}
-
-	private native int getColumnCount(CellTable<?> table) /*-{
-		return table.@com.google.gwt.user.cellview.client.CellTable::columns.@java.util.List::size()();
-	}-*/;
 }
