@@ -106,16 +106,29 @@ public interface Columns<T> {
 
 	/**
 	 * Sets a static string to be used as the header of the column to be generated. Will be used
-	 * when the column is added to the CellTable using one of the configure() methods.
+	 * when the column is added to the CellTable using one of the configure() methods.<br>
+	 * If you wish to use internationalized header strings see {@link TranslatedHeader}.
 	 * 
-	 * At this time, cannot be internationalized.
-	 *
 	 */
 	@Documented
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
 	public @interface Header {
 		String value();
+	}
+
+	/**
+	 * Sets a string to be used as the header of the column to be generated.
+	 * The translator has to lookup the supplied constant and return
+	 * the translated header text.
+	 * 
+	 */
+	@Documented
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.METHOD)
+	public @interface TranslatedHeader {
+		String constant();
+		Class<? extends HeaderTranslator> translator();
 	}
 
 	/**

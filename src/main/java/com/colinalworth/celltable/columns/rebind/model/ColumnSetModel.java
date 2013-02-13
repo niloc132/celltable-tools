@@ -30,6 +30,7 @@ import com.colinalworth.celltable.columns.client.Columns.ConvertedWith;
 import com.colinalworth.celltable.columns.client.Columns.Editable;
 import com.colinalworth.celltable.columns.client.Columns.Header;
 import com.colinalworth.celltable.columns.client.Columns.Sortable;
+import com.colinalworth.celltable.columns.client.Columns.TranslatedHeader;
 import com.colinalworth.celltable.columns.client.ColumnsWithFactory;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -298,15 +299,20 @@ public class ColumnSetModel {
 		}
 
 		/**
+		 * Creates the header string to be used in the table column.<br>
+		 * Handles translation if requested via {@link TranslatedHeader} 
 		 * @return
 		 */
 		public String getHeaderValue() {
 			//TODO finish this logic
-			//TODO I18n
 			//TODO escape strings
-			if (method.isAnnotationPresent(Header.class)) {
-				Header h = method.getAnnotation(Header.class);
-				return "\"" + h.value() + "\"";
+			if (method.isAnnotationPresent(TranslatedHeader.class)) {
+				TranslatedHeader translatedHeader = method.getAnnotation(TranslatedHeader.class);
+				String constant = "\"" + translatedHeader.constant() + "\"" ;
+				return String.format("GWT.<%1$s>create(%1$s.class).getLocalizedHeader(%2$s)", Name.getSourceNameForClass(translatedHeader.translator()), constant);
+			} else if (method.isAnnotationPresent(Header.class)) {
+				Header header = method.getAnnotation(Header.class);
+				return "\"" + header.value() + "\"";
 			}
 			return "\"" + getMethodName() + "\"";
 		}
