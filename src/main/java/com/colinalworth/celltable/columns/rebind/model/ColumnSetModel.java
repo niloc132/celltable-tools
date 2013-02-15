@@ -30,7 +30,7 @@ import com.colinalworth.celltable.columns.client.Columns.ConvertedWith;
 import com.colinalworth.celltable.columns.client.Columns.Editable;
 import com.colinalworth.celltable.columns.client.Columns.Header;
 import com.colinalworth.celltable.columns.client.Columns.Sortable;
-import com.colinalworth.celltable.columns.client.Columns.TranslatedHeader;
+import com.colinalworth.celltable.columns.client.Columns.Translations;
 import com.colinalworth.celltable.columns.client.ColumnsWithFactory;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -300,21 +300,28 @@ public class ColumnSetModel {
 
 		/**
 		 * Creates the header string to be used in the table column.<br>
-		 * Handles translation if requested via {@link TranslatedHeader} 
-		 * @return
+		 * Handles translation if requested via {@link Translations}
+		 * @return the header value
 		 */
 		public String getHeaderValue() {
 			//TODO finish this logic
 			//TODO escape strings
-			if (method.isAnnotationPresent(TranslatedHeader.class)) {
-				TranslatedHeader translatedHeader = method.getAnnotation(TranslatedHeader.class);
-				String constant = "\"" + translatedHeader.constant() + "\"" ;
-				return String.format("GWT.<%1$s>create(%1$s.class).getLocalizedHeader(%2$s)", Name.getSourceNameForClass(translatedHeader.translator()), constant);
-			} else if (method.isAnnotationPresent(Header.class)) {
+			if (method.isAnnotationPresent(Header.class)) {
 				Header header = method.getAnnotation(Header.class);
-				return "\"" + header.value() + "\"";
+				if (method.getEnclosingType().isAnnotationPresent(Translations.class) && header.skipI18n() == false) {
+					return String.format("GWT.<%1$s>create(%1$s.class).%2$s()",
+							Name.getSourceNameForClass(method.getEnclosingType().getAnnotation(Translations.class).value()),
+							header.value());
+				}
+
+				return quote(header.value());
 			}
-			return "\"" + getMethodName() + "\"";
+
+			return quote(getMethodName());
+		}
+
+		private String quote(String value) {
+			return "\"" + value + "\"";
 		}
 
 		/**
