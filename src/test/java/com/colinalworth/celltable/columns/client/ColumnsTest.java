@@ -18,6 +18,7 @@ package com.colinalworth.celltable.columns.client;
 
 import java.util.Date;
 
+import com.colinalworth.celltable.columns.client.Columns.Translations;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -25,6 +26,7 @@ import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.i18n.client.Constants;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.cellview.client.CellTable;
 
@@ -132,4 +134,37 @@ public class ColumnsTest extends GWTTestCase {
 
 		c.configure(cellTable, editor);
 	}
+
+	interface I18nBeanModel {
+		String translated();
+		String translationIgnored();
+		String untranslated();
+	}
+
+	@Translations(TranslationStrings.class)
+	interface I18nColumns extends Columns<I18nBeanModel> {
+		@Header("translated")
+		TextCell translated();
+		@Header(value = "translationIgnored", skipI18n = true)
+		TextCell translationIgnored();
+		@Header(value = "untranslated", skipI18n = false)
+		TextCell untranslated();
+	}
+
+	public void testI18nHeader() {
+		I18nColumns c = GWT.create(I18nColumns.class);
+		CellTable<I18nBeanModel> cellTable = new CellTable<I18nBeanModel>();
+
+		c.configure(cellTable);
+		assertEquals(cellTable.getHeader(0).getValue(), "translationOk");
+		assertEquals(cellTable.getHeader(1).getValue(), "translationIgnored");
+		assertEquals(cellTable.getHeader(2).getValue(), "untranslated");
+	}
+
+	static class TranslationStrings implements Constants {
+		String translated() {
+			return "translationOk";
+		}
+	}
+
 }
