@@ -136,9 +136,9 @@ public class ColumnsTest extends GWTTestCase {
 	}
 
 	interface I18nBeanModel {
-		String translated();
-		String translationIgnored();
-		String untranslated();
+		String getTranslated();
+		String getTranslationIgnored();
+		String getUntranslated();
 	}
 
 	@Translations(TranslationStrings.class)
@@ -156,15 +156,14 @@ public class ColumnsTest extends GWTTestCase {
 		CellTable<I18nBeanModel> cellTable = new CellTable<I18nBeanModel>();
 
 		c.configure(cellTable);
-		assertEquals(cellTable.getHeader(0).getValue(), "translationOk");
-		assertEquals(cellTable.getHeader(1).getValue(), "translationIgnored");
-		assertEquals(cellTable.getHeader(2).getValue(), "untranslated");
+		assertEquals("translationOk", cellTable.getHeader(0).getValue());
+		assertEquals("translationIgnored", cellTable.getHeader(1).getValue());
+		assertEquals("untranslated", cellTable.getHeader(2).getValue());
 	}
 
-	static class TranslationStrings implements Constants {
-		String translated() {
-			return "translationOk";
-		}
+	interface TranslationStrings extends Constants {
+		@DefaultStringValue("translationOk")
+		String translated();
 	}
 
 }
