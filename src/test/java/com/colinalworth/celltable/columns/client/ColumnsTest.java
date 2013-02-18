@@ -166,4 +166,25 @@ public class ColumnsTest extends GWTTestCase {
 		String translated();
 	}
 
+	@Translations(EscapedStrings.class)
+	interface EscapedLabelColumns extends Columns<EditableBeanModel> {
+		@Header("withQuote")
+		TextCell stringProp();
+		
+		@Header(value="With quote \" 2", skipI18n=true)
+		@Path("stringProp")
+		TextCell stringProp2();
+	}
+	interface EscapedStrings extends Constants {
+		@DefaultStringValue("With quote \"")
+		String withQuote();
+	}
+	public void testEscapedLabelChars() {
+		EscapedLabelColumns c = GWT.create(EscapedLabelColumns.class);
+		CellTable<EditableBeanModel> cellTable = new CellTable<EditableBeanModel>();
+		c.configure(cellTable);
+
+		assertEquals("With quote \"", cellTable.getHeader(0).getValue());
+		assertEquals("With quote \" 2", cellTable.getHeader(1).getValue());
+	}
 }
