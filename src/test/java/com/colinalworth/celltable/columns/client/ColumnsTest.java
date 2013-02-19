@@ -18,6 +18,7 @@ package com.colinalworth.celltable.columns.client;
 
 import java.util.Date;
 
+import com.colinalworth.celltable.columns.client.Columns.Translations;
 import com.google.gwt.cell.client.DateCell;
 import com.google.gwt.cell.client.EditTextCell;
 import com.google.gwt.cell.client.FieldUpdater;
@@ -25,6 +26,7 @@ import com.google.gwt.cell.client.NumberCell;
 import com.google.gwt.cell.client.TextCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.editor.client.Editor.Path;
+import com.google.gwt.i18n.client.Constants;
 import com.google.gwt.junit.client.GWTTestCase;
 import com.google.gwt.user.cellview.client.CellTable;
 
@@ -131,5 +133,58 @@ public class ColumnsTest extends GWTTestCase {
 		HasDataFlushableEditor<EditableBeanModel> editor = HasDataFlushableEditor.of(cellTable);
 
 		c.configure(cellTable, editor);
+	}
+
+	interface I18nBeanModel {
+		String getTranslated();
+		String getTranslationIgnored();
+		String getUntranslated();
+	}
+
+	@Translations(TranslationStrings.class)
+	interface I18nColumns extends Columns<I18nBeanModel> {
+		@Header("translated")
+		TextCell translated();
+		@Header(value = "translationIgnored", skipI18n = true)
+		TextCell translationIgnored();
+		@Header(value = "untranslated", skipI18n = false)
+		TextCell untranslated();
+	}
+
+	public void testI18nHeader() {
+		I18nColumns c = GWT.create(I18nColumns.class);
+		CellTable<I18nBeanModel> cellTable = new CellTable<I18nBeanModel>();
+
+		c.configure(cellTable);
+		assertEquals("translationOk", cellTable.getHeader(0).getValue());
+		assertEquals("translationIgnored", cellTable.getHeader(1).getValue());
+		assertEquals("untranslated", cellTable.getHeader(2).getValue());
+	}
+
+	interface TranslationStrings extends Constants {
+		@DefaultStringValue("translationOk")
+		String translated();
+	}
+
+	@Translations(EscapedStrings.class)
+	interface EscapedLabelColumns extends Columns<EditableBeanModel> {
+		@Header("withQuote")
+		TextCell stringProp();
+		
+		@Header(value="With quote \" 2", skipI18n=true)
+		@Path("stringProp")
+		TextCell stringProp2();
+	}
+	interface EscapedStrings extends Constants {
+		@DefaultStringValue("With quote \"")
+		String withQuote();
+	}
+	public void testEscapedLabelChars() {
+		EscapedLabelColumns c = GWT.create(EscapedLabelColumns.class);
+		CellTable<EditableBeanModel> cellTable = new CellTable<EditableBeanModel>();
+		c.configure(cellTable);
+
+		assertEquals("With quote \"", cellTable.getHeader(0).getValue());
+		assertEquals("With quote \" 2", cellTable.getHeader(1).getValue());
 	}
 }
