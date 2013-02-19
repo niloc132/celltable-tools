@@ -308,7 +308,7 @@ public class ColumnSetModel {
 		public String getHeaderValue() {
 			if (method.isAnnotationPresent(Header.class)) {
 				Header header = method.getAnnotation(Header.class);
-				String headerValue = Generator.escape(header.value());
+				String headerValue = header.value();
 
 				if (method.getEnclosingType().isAnnotationPresent(Translations.class) && header.skipI18n() == false) {
 					Class<? extends Constants> translationClass = method.getEnclosingType().getAnnotation(Translations.class).value();
@@ -316,7 +316,7 @@ public class ColumnSetModel {
 					if (context.getTypeOracle().findType(Name.getSourceNameForClass(translationClass)).
 							findMethod(headerValue, new JType[] {}) == null) {
 						
-						// emit nice warning when translation method wasnt found
+						// emit nice warning when translation method wasn't found
 						logger.log(TreeLogger.Type.WARN, "skipping translation for header: '" + headerValue +
 								"' in class: " + method.getEnclosingType().getQualifiedSourceName() +
 								" because no matching translation method was found in constants class: " +
@@ -338,7 +338,7 @@ public class ColumnSetModel {
 		}
 
 		private String quote(String value) {
-			return "\"" + value + "\"";
+			return "\"" + Generator.escape(value) + "\"";
 		}
 
 		/**
