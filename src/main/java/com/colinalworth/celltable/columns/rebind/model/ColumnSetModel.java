@@ -30,9 +30,11 @@ import com.colinalworth.celltable.columns.client.Columns.ConvertedWith;
 import com.colinalworth.celltable.columns.client.Columns.Editable;
 import com.colinalworth.celltable.columns.client.Columns.Header;
 import com.colinalworth.celltable.columns.client.Columns.Sortable;
+import com.colinalworth.celltable.columns.client.Columns.Translations;
 import com.colinalworth.celltable.columns.client.ColumnsWithFactory;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.core.ext.Generator;
 import com.google.gwt.core.ext.GeneratorContext;
 import com.google.gwt.core.ext.TreeLogger;
 import com.google.gwt.core.ext.typeinfo.JClassType;
@@ -41,6 +43,7 @@ import com.google.gwt.core.ext.typeinfo.JType;
 import com.google.gwt.dev.util.Name;
 import com.google.gwt.editor.client.Editor.Path;
 import com.google.gwt.editor.rebind.model.ModelUtils;
+import com.google.gwt.i18n.client.Constants;
 
 /**
  * @author colin
@@ -48,7 +51,7 @@ import com.google.gwt.editor.rebind.model.ModelUtils;
  */
 public class ColumnSetModel {
 	private final JClassType beanType;
-	//private final TreeLogger logger;
+	private final TreeLogger logger;
 	private final GeneratorContext context;
 	private final Set<String> names;
 
@@ -56,7 +59,7 @@ public class ColumnSetModel {
 	private final List<ColumnModel> columns;
 
 	public ColumnSetModel(JClassType toGenerate, GeneratorContext context, TreeLogger logger, Set<String> names) {
-		//this.logger = logger;
+		this.logger = logger;
 		this.context = context;
 		this.names = names;
 
@@ -298,17 +301,44 @@ public class ColumnSetModel {
 		}
 
 		/**
-		 * @return
+		 * Creates the header string to be used in the table column.<br>
+		 * Handles translation if requested via {@link Translations}
+		 * @return the header value
 		 */
 		public String getHeaderValue() {
-			//TODO finish this logic
-			//TODO I18n
-			//TODO escape strings
 			if (method.isAnnotationPresent(Header.class)) {
-				Header h = method.getAnnotation(Header.class);
-				return "\"" + h.value() + "\"";
+				Header header = method.getAnnotation(Header.class);
+				String headerValue = header.value();
+
+				if (method.getEnclosingType().isAnnotationPresent(Translations.class) && header.skipI18n() == false) {
+					Class<? extends Constants> translationClass = method.getEnclosingType().getAnnotation(Translations.class).value();
+
+					if (context.getTypeOracle().findType(Name.getSourceNameForClass(translationClass)).
+							findMethod(headerValue, new JType[] {}) == null) {
+						
+						// emit nice warning when translation method wasn't found
+						logger.log(TreeLogger.Type.WARN, "skipping translation for header: '" + headerValue +
+								"' in class: " + method.getEnclosingType().getQualifiedSourceName() +
+								" because no matching translation method was found in constants class: " +
+								translationClass.getCanonicalName());
+						logger.log(TreeLogger.Type.WARN, "you can disable this warning by setting the \"skipI18n\" flag to true for this header.");
+
+						return quote(headerValue);
+					}
+
+					return String.format("GWT.<%1$s>create(%1$s.class).%2$s()",
+							Name.getSourceNameForClass(translationClass),
+							headerValue);
+				}
+
+				return quote(headerValue);
 			}
-			return "\"" + getMethodName() + "\"";
+
+			return quote(getMethodName());
+		}
+
+		private String quote(String value) {
+			return "\"" + Generator.escape(value) + "\"";
 		}
 
 		/**

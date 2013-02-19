@@ -23,6 +23,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import com.google.gwt.cell.client.FieldUpdater;
+import com.google.gwt.i18n.client.Constants;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 
@@ -106,16 +107,28 @@ public interface Columns<T> {
 
 	/**
 	 * Sets a static string to be used as the header of the column to be generated. Will be used
-	 * when the column is added to the CellTable using one of the configure() methods.
+	 * when the column is added to the CellTable using one of the configure() methods.<br>
+	 * If you wish to use internationalized header strings see {@link Translations}.<br>
+	 * You can skip translation for this header by setting the skipI18n flag.
 	 * 
-	 * At this time, cannot be internationalized.
-	 *
 	 */
 	@Documented
 	@Retention(RetentionPolicy.RUNTIME)
 	@Target(ElementType.METHOD)
 	public @interface Header {
 		String value();
+		boolean skipI18n() default false;
+	}
+
+	/**
+	 * Sets a {@link Constants} class to use for header translation.
+	 * 
+	 */
+	@Documented
+	@Retention(RetentionPolicy.RUNTIME)
+	@Target(ElementType.TYPE)
+	public @interface Translations {
+	    Class<? extends Constants> value();
 	}
 
 	/**
